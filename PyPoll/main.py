@@ -1,51 +1,52 @@
-# Import and name reference file
 import csv
 
-csv_file_path = r'C:\Users\micha\OneDrive\Documents\GitHub\python-challenge\PyBank\Resources\budget_data.csv'
+csv_file_path = r'C:\Users\micha\OneDrive\Documents\GitHub\python-challenge\PyPoll\Resources\election_data.csv'
+output_file_path = r'C:\Users\micha\OneDrive\Documents\GitHub\python-challenge\PyPoll\Analysis\election_data_analysis.txt'
 
-# Initialize variables to store data 
-total_months = 0
-net_total = 0
-previous_profit_loss = 0
-changes = []
-dates = []
+# initialize variables to store data
+# total_votes = 0
+# candidates = []
+# vote_share = []
+# votes_by_candidate = []
+# winner = 0
 
-# Open and read CSV file
-with open(csv_file_path, newline='') as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=',')
-    header = next(csvreader, None)
+# open and read csv file
+with open(csv_file_path, "r") as file:
+    lines = file.readlines()
+    header = lines[0].strip().split(",")
+    data = [dict(zip(header,line.strip().split(","))) for line in lines[1:]]
 
-    for row in csvreader:
-        total_months += 1
-        date = row[0]
+total_votes = len(data)
 
-        try:
-            profit_loss = int(row[1])
-        except ValueError:
-            print(f"Skipping row {total_months} - Non-numeric value found in 'Profit/Losses' column")
-            continue
-        
-        net_total += profit_loss
+candidates = set(entry["Candidate"] for entry in data)
 
-        if total_months > 1:
-            change = profit_loss - previous_profit_loss
-            changes.append(change)
-            dates.append(date)
+candidate_votes = {}
+for entry in data:
+    candidate = entry["Candidate"]
+    candidate_votes[candidate] = candidate_votes.get(candidate, 0) + 1
 
-        previous_profit_loss = profit_loss
+percentage_votes = {candidate: votes / total_votes * 100 for candidate, votes in candidate_votes.items()}
 
-if total_months == 0:
-    print("no valid data found in the CSV file.")
-else:
-    average_change = sum(change) / len(changes)
-    max_increase = max(changes)
-    max_decrease = min(changes)
-    max_increase_date = dates[changes.index(max_increase)]
-    max_decrease_date = dates[changes.index(max_decrease)]
 
-# print results
-print(f'Total Months: {total_months}')
-print(f'Total: ${net_total}')
-print(f'Average Change: ${average_change:.2f}')
-print(f'Greatest Increase in Profits: {max_increase_date} (${max_increase})')
-print(f'Greatest Decrease in Profits: {max_decrease_date} (${max_decrease})')
+winner = max(candidate_votes, key=candidate_votes.get)
+
+print("Election Results")
+print("-------------------")
+print(f"Total Votes: {total_votes}")
+print("-------------------")
+for candidate in candidates:
+    print(f"{candidate}: {percentage_votes[candidate]:.3f}% ({candidate_votes[candidate]})")
+print("-------------------")
+print(f"Winner: {winner}")
+print("-------------------")
+
+with open(output_file_path, "w") as output_file:
+    output_file.write("Election Results\n")
+    output_file.write("-------------------\n")
+    output_file.write(f"Total Votes: {total_votes}\n")
+    output_file.write("-------------------\n")
+    for candidate in candidates:
+        output_file.write(f"{candidate}: {percentage_votes[candidate]:.3f}% ({candidate_votes[candidate]})\n")
+    output_file.write("-------------------\n")
+    output_file.write(f"Winner: {winner}\n")
+    output_file.write("-------------------\n")
