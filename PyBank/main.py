@@ -54,9 +54,13 @@ print(f'Greatest Decrease in Profits: {max_decrease_date} (${max_decrease})')
 # Print results to txt file
 with open(output_file_path, 'w') as output_file:
     output_file.write(f'Total Months: {total_months}')
+
     output_file.write(f'Total: ${net_total}')
+
     output_file.write(f'Average Change: ${average_change:.2f}')
+
     output_file.write(f'Greatest Increase in Profits: {max_increase_date} (${max_increase})')
+    
     output_file.write(f'Greatest Decrease in Profits: {max_decrease_date} (${max_decrease})')
 
 print(f'Results written to: {output_file_path}')
