@@ -1,14 +1,8 @@
 import csv
+import os
 
 csv_file_path = r'C:\Users\micha\OneDrive\Documents\GitHub\python-challenge\PyPoll\Resources\election_data.csv'
 output_file_path = r'C:\Users\micha\OneDrive\Documents\GitHub\python-challenge\PyPoll\Analysis\election_data_analysis.txt'
-
-# initialize variables to store data
-# total_votes = 0
-# candidates = []
-# vote_share = []
-# votes_by_candidate = []
-# winner = 0
 
 # open and read csv file
 with open(csv_file_path, "r") as file:
